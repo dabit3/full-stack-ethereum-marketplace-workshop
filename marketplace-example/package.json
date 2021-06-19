@@ -19,10 +19,14 @@
     "hardhat": "^2.4.0",
     "next": "11.0.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "web3modal": "^1.9.3"
   },
   "devDependencies": {
+    "autoprefixer": "^10.2.6",
     "eslint": "7.29.0",
-    "eslint-config-next": "11.0.0"
+    "eslint-config-next": "11.0.0",
+    "postcss": "^8.3.5",
+    "tailwindcss": "^2.2.2"
   }
 }
