@@ -1,4 +1,3 @@
-const { BigNumber } = ethers
 const axios = require('axios')
 
 describe("NFTMarket", function() {
@@ -19,7 +18,7 @@ describe("NFTMarket", function() {
     let tx = await transaction.wait()
     let event = tx.events.pop()
     let value = event.args[2]
-    value = BigNumber.from(value).toNumber()
+    value = value.toNumber()
     // console.log('value: ', value)
 
     transaction = await nft.createToken("https://ipfs.fleek.co/ipfs/bafybeicfghmsa3qukuz3dl4cwsoe7muscoaym5z6jhsxdlxwguun43cpfy")
@@ -27,7 +26,7 @@ describe("NFTMarket", function() {
     tx = await transaction.wait()
     event = tx.events.pop()
     value = event.args[2]
-    value = BigNumber.from(value).toNumber()
+    value = value.toNumber()
     // console.log('value: ', value)
 
     transaction = await nft.createToken("https://ipfs.fleek.co/ipfs/bafybeicfghmsa3qukuz3dl4cwsoe7muscoaym5z6jhsxdlxwguun43cpfy")
@@ -54,8 +53,8 @@ describe("NFTMarket", function() {
       const tokenUri = await nft.tokenURI(i.tokenId)
       const tokenMeta = await axios.get(tokenUri)
       let item = {
-        price: BigNumber.from(i.price).toNumber(),
-        tokenId: BigNumber.from(i.tokenId).toNumber(),
+        price: i.price.toNumber(),
+        tokenId: i.price.toNumber(),
         seller: i.seller,
         owner: i.owner,
         tokenUri
