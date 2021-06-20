@@ -11,7 +11,7 @@ contract NFTMarket is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
   uint[] marketItems;
-  
+
   struct MarketItem {
     uint itemId;
     address nftContract;
@@ -87,9 +87,15 @@ contract NFTMarket is ReentrancyGuard {
   }
 
   function fetchMarketItems() public view returns (MarketItem[] memory) {
-    uint itemCount = _itemIds.current();
-    MarketItem[] memory items = new MarketItem[](itemCount);
+    uint itemCount = marketItems.length;
+    uint unsoldItemCount = 0;
     for (uint i = 0; i < itemCount; i++) {
+      if (idToMarketItem[i + 1].owner == address(0)) {
+        unsoldItemCount += 1;
+      }
+    }
+    MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+    for (uint i = 0; i < unsoldItemCount; i++) {
       MarketItem storage currentItem = idToMarketItem[i + 1];
       items[i] = currentItem;
     }
