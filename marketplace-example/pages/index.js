@@ -15,9 +15,9 @@ export default function Home() {
   const [nfts, setNfts] = useState([])
   const [loaded, setLoaded] = useState('not-loaded')
   useEffect(() => {
-    connect()
+    loadNFTs()
   }, [])
-  async function connect() {
+  async function loadNFTs() {
     const provider = new ethers.providers.JsonRpcProvider()
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
     const marketCcontract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
@@ -56,20 +56,22 @@ export default function Home() {
       value: price
     })
     await transaction.wait()
+    loadNFTs()
   }
   return (
     <div className="flex justify-center">
-      <div className="w-1/2">
-        <input />
-        {
-          nfts.map(nft => (
-            <div>
-              <img src={nft.image} />
-              <p>Price: {nft.price}</p>
-              <button onClick={() => buyNft(nft)}>Buy NFT</button>
-            </div>
-          ))
-        }
+      <div style={{ width: 900 }}>
+        <div class="grid grid-cols-2 gap-4 pt-8">
+          {
+            nfts.map(nft => (
+              <div className="border p-4 shadow">
+                <img src={nft.image} className="rounded" />
+                <p className="text-2xl my-4 font-bold">Price: {nft.price}</p>
+                <button className="bg-green-600 text-white py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy NFT</button>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   )
