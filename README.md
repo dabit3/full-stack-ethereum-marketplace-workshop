@@ -554,7 +554,7 @@ Finally, in the `createMarketSale` function, send the `listingPrice` value to th
 payable(owner).transfer(listingPrice);
 ```
 
-Next, in the client-side code, open __pages/create-item.js__ and add the payment value to be sent along with the transaction:
+Next, in the client-side code, open __pages/create-item.js__ and add the payment value to be sent along with the transaction in the `createSale` function:
 
 ```javascript
 // above code omitted
