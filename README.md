@@ -187,3 +187,36 @@ contract NFTMarket is ReentrancyGuard {
   }
 }
 ```
+
+There is a lot going on in this contract, so let's walk through some of it.
+
+#### What is ReentrancyGuard
+
+Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
+ * available, which can be applied to functions to make sure there are no nested
+ * (reentrant) calls to them.
+
+#### MarketItem
+
+The `MarketItem` struct allows us to store records of items that we want to make available in the marketplace.
+
+#### idToMarketItem
+
+This mapping allows us to create a key value pairing between IDs and `MarketItem`s.
+
+#### createMarketItem
+
+This function transfers an NFT to the contract address of the market, and puts the item for sale.
+
+#### createMarketSale
+
+This function enables the transfer of the NFT as well as Eth between the buyer and seller.
+
+#### fetchMarketItems
+
+This function returns all market items that are still for sale.
+
+#### fetchMyNFTs
+
+This function returns the NFTs that the user has purchased.
+
