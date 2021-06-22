@@ -329,7 +329,7 @@ This should create and launch a local node.
 Next, open another terminal and deploy the contracts:
 
 ```sh
-npx hardhat run scripts/deploy.js --network
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
 When this completes successfully, you should have the addresses printed out to the console for your smart contract deployments.
