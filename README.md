@@ -304,6 +304,18 @@ To run the test and see the output, run the following command:
 npx hardhat test
 ```
 
+### The smart contracts
+
+The smart contracts are located in the __contracts__ directory.
+
+To use the smart contracts in our front end (React) applications, we'll need to compile the contract into ABIs.
+
+The Hardhat development environment allows us to do this using the Hardhat CLI.
+
+We can define the location of the artifacts output by configuring its location in __hardhat.config.js__ along with any other properties for our Hardhat development environment.
+
+In our project, the location is set to __./artifacts__ in the root directory.
+
 ### Writing the deployment script
 
 Next, let's write the script to deploy the contracts.
