@@ -290,9 +290,13 @@ git clone https://github.com/dabit3/full-stack-ethereum-marketplace-workshop.git
 cd full-stack-ethereum-marketplace-workshop/marketplace-starter
 
 yarn
+
+# or
+
+npm install
 ```
 
-Next, check out the tests in __test/test.js__. Here, we can mock the functionality that we'll need for our project.
+Next, take a look at the tests in __test/test.js__. Here, we can mock the functionality that we'll need for our project.
 
 To run the test and see the output, run the following command:
 
