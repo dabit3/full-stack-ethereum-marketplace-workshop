@@ -308,7 +308,7 @@ npx hardhat test
 
 The smart contracts are located in the __contracts__ directory.
 
-To use the smart contracts in our front end (React) applications, we'll need to compile the contract into ABIs.
+To use the smart contracts in our front-end (React) applications, we'll need to compile the contract into ABIs.
 
 The Hardhat development environment allows us to do this using the Hardhat CLI.
 
