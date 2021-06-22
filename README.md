@@ -304,7 +304,7 @@ To run the test and see the output, run the following command:
 npx hardhat test
 ```
 
-### Writing the deployment scrip
+### Writing the deployment script
 
 Next, let's write the script to deploy the contracts.
 
