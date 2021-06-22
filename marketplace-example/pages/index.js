@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import web3 from 'web3'
 import axios from 'axios'
 import Web3Modal from "web3modal"
@@ -14,6 +14,9 @@ import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 export default function Home() {
   const [nfts, setNfts] = useState([])
   const [loaded, setLoaded] = useState('not-loaded')
+  useEffect(() => {
+    connect()
+  }, [])
   async function connect() {
     const provider = new ethers.providers.JsonRpcProvider()
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
@@ -58,7 +61,6 @@ export default function Home() {
     <div className="flex justify-center">
       <div className="w-1/2">
         <input />
-        <button onClick={connect}>Connect</button>
         {
           nfts.map(nft => (
             <div>

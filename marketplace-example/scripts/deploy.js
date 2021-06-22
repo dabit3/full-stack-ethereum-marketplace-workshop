@@ -16,7 +16,8 @@ async function main() {
   await nft.deployed();
   console.log("NFT deployed to:", nft.address);
 
-  await nft.setApprovalForAll(nftMarket.address, true)
+  const tx = await nft.setApprovalForAll(nftMarket.address, true)
+  await tx.wait()
 }
 
 // We recommend this pattern to be able to use async/await everywhere

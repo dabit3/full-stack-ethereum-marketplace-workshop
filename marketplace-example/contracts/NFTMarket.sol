@@ -10,6 +10,7 @@ import "hardhat/console.sol";
 contract NFTMarket is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
+  Counters.Counter private _itemsSold;
   uint[] marketItems;
 
   struct MarketItem {
@@ -46,8 +47,8 @@ contract NFTMarket is ReentrancyGuard {
     _itemIds.increment();
     uint256 itemId = _itemIds.current();
     marketItems.push(itemId);
-
-    idToMarketItem[itemId] = MarketItem(
+  
+    idToMarketItem[itemId] =  MarketItem(
       itemId,
       nftContract,
       tokenId,
@@ -79,6 +80,7 @@ contract NFTMarket is ReentrancyGuard {
     idToMarketItem[itemId].seller.transfer(msg.value);
     IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
     idToMarketItem[itemId].owner = payable(msg.sender);
+    _itemsSold.increment();
   }
 
   function fetchMarketItem(uint itemId) public view returns (MarketItem memory) {
@@ -87,16 +89,22 @@ contract NFTMarket is ReentrancyGuard {
   }
 
   function fetchMarketItems() public view returns (MarketItem[] memory) {
-    uint itemCount = marketItems.length;
-    uint unsoldItemCount = 0;
+    uint itemCount = _itemIds.current();
+    uint unsoldItemCount = _itemIds.current() - _itemsSold.current();
+    uint currentIndex = 0;
+    uint[] memory unsoldItemIds =  new uint[](unsoldItemCount);
     for (uint i = 0; i < itemCount; i++) {
       if (idToMarketItem[i + 1].owner == address(0)) {
-        unsoldItemCount += 1;
+        uint itemId = idToMarketItem[i + 1].itemId;
+        unsoldItemIds[currentIndex] = itemId;
+        currentIndex += 1;
       }
     }
+   
     MarketItem[] memory items = new MarketItem[](unsoldItemCount);
     for (uint i = 0; i < unsoldItemCount; i++) {
-      MarketItem storage currentItem = idToMarketItem[i + 1];
+      uint currentId = unsoldItemIds[i];
+      MarketItem storage currentItem = idToMarketItem[currentId];
       items[i] = currentItem;
     }
     return items;
