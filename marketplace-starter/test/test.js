@@ -62,6 +62,6 @@ describe("NFTMarket", function() {
     console.log('items: ', items)
 
     const myNfts = await market.connect(userAddress2).fetchMyNFTs()
-    console.log('myNfts:', myNfts);
+    console.log('myNfts:', myNfts.length);
   });
 });
