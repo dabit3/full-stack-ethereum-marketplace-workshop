@@ -17,16 +17,12 @@ describe("NFTMarket", function() {
     await nft.createToken("a")
     await nft.createToken("b")
     await nft.createToken("c")
-
-    await nft.setApprovalForAll(marketAddress, true)
   
     await market.createMarketItem(nftContractAddress, 1, 1000)
     await market.createMarketItem(nftContractAddress, 2, 1000)
     await market.createMarketItem(nftContractAddress, 3, 1000)
     
     const [_, userAddress, userAddress2, userAddress3] = await ethers.getSigners();
-
-    // await nft.connect(userAddress3).createToken("Some string")
 
     await market.connect(userAddress).createMarketSale(nftContractAddress, 1, { value: 1000})
     await market.connect(userAddress2).createMarketSale(nftContractAddress, 2, { value: 1000})

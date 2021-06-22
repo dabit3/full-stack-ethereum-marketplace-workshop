@@ -237,7 +237,7 @@ To build the front end, you can use the starting project in the __marketplace_st
   2. Install the necessary dependencies:
 
   ```sh
-  ethers hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers
+  npm install web3modal ethers hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers axios ipfs-http-client
   ```
 
   Optional, install tailwind and dependencies:
@@ -276,3 +276,226 @@ To build the front end, you can use the starting project in the __marketplace_st
   };
   ```
 </details>
+
+Clone the repo, change into the __marketplace-starter__ directory, and install the dependencies:
+
+```sh
+git clone https://github.com/dabit3/full-stack-ethereum-marketplace-workshop.git
+
+cd full-stack-ethereum-marketplace-workshop/marketplace-starter
+
+yarn
+```
+
+Next, check out the tests in __test/test.js__. Here, we can mock the functionality that we'll need for our project.
+
+To run the test and see the output, run the following command:
+
+```sh
+npx hardhat test
+```
+
+### Writing the deployment scrip
+
+Next, let's write the script to deploy the contracts.
+
+To do so, open __scripts/deploy.js__ and add the following to the `main` function body:
+
+```javascript
+const NFTMarket = await hre.ethers.getContractFactory("NFTMarket");
+const nftMarket = await NFTMarket.deploy();
+await nftMarket.deployed();
+console.log("nftMarket deployed to:", nftMarket.address);
+
+const NFT = await hre.ethers.getContractFactory("NFT");
+const nft = await NFT.deploy(nftMarket.address);
+await nft.deployed();
+console.log("nft deployed to:", nft.address);
+```
+
+### Running a local node and deploying the contract
+
+Next, let's run a local node and deploy our contract to the node.
+
+To do so, open your terminal and run the following command:
+
+```sh
+npx hardhat node
+```
+
+This should create and launch a local node.
+
+Next, open another terminal and deploy the contracts:
+
+```sh
+npx hardhat run scripts/deploy.js --network
+```
+
+When this completes successfully, you should have the addresses printed out to the console for your smart contract deployments.
+
+Take those values and update the configuration in __config.js__:
+
+```javascript
+export const nftaddress = "nft-contract-address"
+export const nftmarketaddress = "market-contract-address"
+```
+
+### Running the app
+
+Now, we should be able to run the app.
+
+To do so, open the terminal and run the following command:
+
+```sh
+npm run dev
+```
+
+## Building the UI
+
+### Fetching NFTs
+
+The first piece of functionality we'll implement will be fetching NFTs from the marketplace and rendering them to the UI.
+
+To do so, open __pages/index.js__ and update the `loadNFTs` function with the following:
+
+```javascript
+async function loadNFTs() {
+  const provider = new ethers.providers.JsonRpcProvider()
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+  const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
+  const data = await marketContract.fetchMarketItems()
+  
+  const items = await Promise.all(data.map(async i => {
+    const tokenUri = await tokenContract.tokenURI(i.tokenId)
+    const meta = await axios.get(tokenUri)
+    let price = web3.utils.fromWei(i.price.toString(), 'ether');
+    let item = {
+      price,
+      tokenId: i.tokenId.toNumber(),
+      seller: i.seller,
+      owner: i.owner,
+      image: meta.data.image,
+    }
+    return item
+  }))
+  setNfts(items)
+  setLoaded('loaded') 
+}
+```
+
+The `loadNFTs` function calls the `fetchMarketItems` function in our smart contract and returns all unsold NFTs.
+
+We then map over each NFT to transform the response into something more readable for the user interface.
+
+### Creating an NFT and placing it for sale
+
+Next, let's create the function for minting the NFT and putting it for sale in the market.
+
+To do so, open __pages/create-item.js__ and update the `createSale` function with the following code:
+
+```javascript
+async function createSale(url) {
+  const web3Modal = new Web3Modal({
+    network: "mainnet",
+    cacheProvider: true,
+  });
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)    
+  const signer = provider.getSigner()
+  
+  let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
+  let transaction = await contract.createToken(url)
+  let tx = await transaction.wait()
+  let event = tx.events[0]
+  let value = event.args[2]
+  let tokenId = value.toNumber()
+  const price = web3.utils.toWei(formInput.price, 'ether')
+
+  contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+  transaction = await contract.createMarketItem(nftaddress, tokenId, price)
+  await transaction.wait()
+  router.push('/')
+}
+```
+
+This function writes two transactions to the network:
+
+__createToken__ mints the new token.
+
+__createMarketItem__ places the item for sale.
+
+Once the item has been crated, we redict the user back to the main page.
+
+### Allowing a user to purchase an NFT
+
+Next, let's create the function for allowing a user to purchase an NFT.
+
+To do so, open __pages/index.js__ and update the `buyNft` function with the following code:
+
+```javascript
+async function buyNft(nft) {
+  const web3Modal = new Web3Modal({
+    network: "mainnet",
+    cacheProvider: true,
+  });
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)
+  const signer = provider.getSigner()
+  const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+  
+  const price = web3.utils.toWei(nft.price.toString(), 'ether');
+  
+  const transaction = await contract.createMarketSale(nftaddress, nft.tokenId, {
+    value: price
+  })
+  await transaction.wait()
+  loadNFTs()
+}
+```
+
+This function writes the `createMarketSale` to the network, allowing the user to transfer the amount from their wallet to the seller's wallet.
+
+### Allowing a user to view their own NFTs
+
+The last piece of functionality we want to implement is to give users the ability to view the NFTs they have purchased. To do so, we'll be calling the `fetchMyNFTs` function from the smart contract.
+
+Open __pages/my-nfts.js__ and update the `loadNFTs` function with the following:
+
+```javascript
+async function loadNFTs() {
+  const web3Modal = new Web3Modal({
+    network: "mainnet",
+    cacheProvider: true,
+  });
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)
+  const signer = provider.getSigner()
+    
+  const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+  const data = await marketContract.fetchMyNFTs()
+  
+  const items = await Promise.all(data.map(async i => {
+    const tokenUri = await tokenContract.tokenURI(i.tokenId)
+    const meta = await axios.get(tokenUri)
+    let price = web3.utils.fromWei(i.price.toString(), 'ether');
+    let item = {
+      price,
+      tokenId: i.tokenId.toNumber(),
+      seller: i.seller,
+      owner: i.owner,
+      image: meta.data.image,
+    }
+    return item
+  }))
+
+  setNfts(items)
+  setLoaded('loaded') 
+}
+```
+
+### Conclusion
+
+The project should now be complete. You should be able to create, view, and purchase NFTs from the marketplace.
+
+To view a completed version of the project, check out the code located in the __marketplace-complete__ folder.
