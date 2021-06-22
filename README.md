@@ -517,6 +517,54 @@ async function loadNFTs() {
 }
 ```
 
+## Enabling listing fees
+
+Next, we want the operator of the marketplace to collect listing fees. We can add this functionality with only a few lines of code.
+
+First, open the __NFTMarket.sol__ contract located in the __contracts__ directory.
+
+Here, we will set a listing price that you want to be using. We will also, create a variable that we can use to store the owner of the contract.
+
+Add the following lines of code below the `marketItems` variable initialization:
+
+```solidity
+address payable owner;
+uint256 listingPrice = 0.01 ether;
+```
+
+Next, create a `constructor` to store the contract owner's address:
+
+
+```solidity
+constructor() {
+  owner = payable(msg.sender);
+}
+```
+
+In the `createMarketItem` function, set a check to make sure that the listing fee has been passed into the transaction:
+
+```solidity
+require(price > 0, "Price must be at least 1 wei"); // below this line 👇
+require(msg.value == listingPrice, "Price must be equal to listing price");
+```
+
+Finally, in the `createMarketSale` function, send the `listingPrice` value to the contract owner once the sale is completed. This can go at the end of the function:
+
+```solidity
+payable(owner).transfer(listingPrice);
+```
+
+Next, in the client-side code, open __pages/create-item.js__ and add the payment value to be sent along with the transaction:
+
+```javascript
+// above code omitted
+const listingPrice = web3.utils.toWei('0.01', 'ether')
+
+contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+transaction = await contract.createMarketItem(nftaddress, tokenId, price, { value: listingPrice })
+// below code omitted
+```
+
 ### Conclusion
 
 The project should now be complete. You should be able to create, view, and purchase NFTs from the marketplace.
