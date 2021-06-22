@@ -220,3 +220,59 @@ This function returns all market items that are still for sale.
 
 This function returns the NFTs that the user has purchased.
 
+## Building the front end
+
+To build the front end, you can use the starting project in the __marketplace_starter__ folder.
+
+<details>
+  <summary>If you'd like to know how to bootstrap the project from scratch yourself, follow these steps</summary>
+  
+  1. Create a new Next.js app and change into the directory:
+
+  ```sh
+  npx create-next-app marketplace-app
+  cd marketplace-app
+  ```
+
+  2. Install the necessary dependencies:
+
+  ```sh
+  ethers hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers
+  ```
+
+  Optional, install tailwind and dependencies:
+  ```sh
+  npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+
+  npx tailwindcss init -p
+
+  update styles/globals.css with the following
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  ```
+
+  3. Initialize Hardhat environment
+
+  ```sh
+  npx hardhat
+  ? What do you want to do? Create a sample project
+  ? Hardhat project root: <Choose default path>
+  ```
+
+  4. Open hardhat.config.js and update the module.exports to look like this:
+
+  ```javascript
+  module.exports = {
+    solidity: "0.8.3",
+    paths: {
+      artifacts: './src/artifacts',
+    },
+    networks: {
+      hardhat: {
+        chainId: 1337
+      }
+    }
+  };
+  ```
+</details>
