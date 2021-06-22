@@ -10,8 +10,11 @@ import "hardhat/console.sol";
 contract NFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    address contractAddress;
 
-    constructor() ERC721("Eat The Blocks NFTs", "ETBNFT") {}
+    constructor(address marketplaceAddress) ERC721("Eat The Blocks NFTs", "ETBNFT") {
+        contractAddress = marketplaceAddress;
+    }
 
     function createToken(string memory tokenURI) public returns (uint) {
         _tokenIds.increment();
@@ -19,6 +22,7 @@ contract NFT is ERC721URIStorage {
 
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
+        setApprovalForAll(contractAddress, true);
         return newItemId;
     }
 }
