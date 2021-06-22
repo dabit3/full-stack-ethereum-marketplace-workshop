@@ -3,6 +3,8 @@
 ![This workshop will walk you through creating a digital marketplace on Ethereum.
 ](header.png)
 
+The technologies used in this workshop are [React](https://reactjs.org/), [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), [HardHat](https://hardhat.org/), [Solidity](https://docs.soliditylang.org/en/v0.8.5/), and [Ethers](https://docs.ethers.io/v5/).
+
 ### Getting started
 
 The first thing we need to do is write the smart contracts.
@@ -12,7 +14,7 @@ The marketplace will consist of two main smart contracts:
 - NFT Contract for minting NFTs
 - Markeplace contract for facilitating the sale of NFTs
 
-For writing an NFT, we can use the [ERC721](https://eips.ethereum.org/EIPS/eip-721) standard that is easily available vial [OpenZeppelin](https://docs.openzeppelin.com/contracts/3.x/erc721).
+For writing an NFT, we can use the [ERC721](https://eips.ethereum.org/EIPS/eip-721) standard that is available via [OpenZeppelin](https://docs.openzeppelin.com/contracts/3.x/erc721).
 
 To get started, head over to [https://remix.ethereum.org/](https://remix.ethereum.org/) and create a new file called __Marketplace.sol__.
 
@@ -239,7 +241,8 @@ To build the front end, you can use the starting project in the __marketplace_st
   2. Install the necessary dependencies:
 
   ```sh
-  npm install web3modal ethers hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai @nomiclabs/hardhat-ethers axios ipfs-http-client
+  npm install web3modal ethers hardhat @nomiclabs/hardhat-waffle ethereum-waffle chai \ 
+  @nomiclabs/hardhat-ethers axios ipfs-http-client @openzeppelin/contracts
   ```
 
   Optional, install tailwind and dependencies:
@@ -279,7 +282,9 @@ To build the front end, you can use the starting project in the __marketplace_st
   ```
 </details>
 
-Clone the repo, change into the __marketplace-starter__ directory, and install the dependencies:
+### Dowloading and configuring the project
+
+Clone the repo, then change into the __marketplace-starter__ directory, and install the dependencies:
 
 ```sh
 git clone https://github.com/dabit3/full-stack-ethereum-marketplace-workshop.git
