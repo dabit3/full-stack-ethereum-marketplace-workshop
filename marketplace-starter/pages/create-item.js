@@ -20,26 +20,7 @@ export default function Home() {
   const router = useRouter()
 
   async function createSale(url) {
-    const web3Modal = new Web3Modal({
-      network: "mainnet",
-      cacheProvider: true,
-    });
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)    
-    const signer = provider.getSigner()
-    
-    let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
-    let transaction = await contract.createToken(url)
-    let tx = await transaction.wait()
-    let event = tx.events[0]
-    let value = event.args[2]
-    let tokenId = value.toNumber()
-    const price = web3.utils.toWei(formInput.price, 'ether')
-  
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    transaction = await contract.createMarketItem(nftaddress, tokenId, price)
-    await transaction.wait()
-    router.push('/')
+    // write code to create sale here
   }
   async function onChange(e) {
     const file = e.target.files[0];
@@ -59,7 +40,6 @@ export default function Home() {
   async function createMarket() {
     const { name, description, price } = formInput
     if (!name || !description || !price || !fileUrl) return
-    // first, upload to IPFS
     const data = JSON.stringify({
       name, description, image: fileUrl
     })
@@ -102,7 +82,7 @@ export default function Home() {
           )
         }
         <button onClick={createMarket} className="mt-4 bg-blue-500 text-white rounded p-4 shadow-lg">
-          Save NFT
+          Create NFT
         </button>
       </div>
     </div>
