@@ -196,9 +196,7 @@ There is a lot going on in this contract, so let's walk through some of it.
 
 #### What is ReentrancyGuard
 
-Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
- * available, which can be applied to functions to make sure there are no nested
- * (reentrant) calls to them.
+Inheriting from `ReentrancyGuard` will make the `nonReentrant` modifier available, which can be applied to functions to make sure there are no nested (reentrant) calls to them.
 
 #### MarketItem
 
