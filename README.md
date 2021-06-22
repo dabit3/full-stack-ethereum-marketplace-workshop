@@ -359,8 +359,8 @@ When this completes successfully, you should have the addresses printed out to t
 Take those values and update the configuration in __config.js__:
 
 ```javascript
-export const nftaddress = "nft-contract-address"
 export const nftmarketaddress = "market-contract-address"
+export const nftaddress = "nft-contract-address"
 ```
 
 ### Running the app
