@@ -523,7 +523,7 @@ First, open the __NFTMarket.sol__ contract located in the __contracts__ director
 
 Here, we will set a listing price that you want to be using. We will also, create a variable that we can use to store the owner of the contract.
 
-Add the following lines of code below the `marketItems` variable initialization:
+Add the following lines of code below the `_itemsSold` variable initialization:
 
 ```solidity
 address payable owner;
