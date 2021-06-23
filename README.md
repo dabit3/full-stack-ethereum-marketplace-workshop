@@ -71,7 +71,6 @@ contract NFTMarket is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _itemIds;
   Counters.Counter private _itemsSold;
-  uint[] marketItems;
 
   struct MarketItem {
     uint itemId;
@@ -106,7 +105,6 @@ contract NFTMarket is ReentrancyGuard {
 
     _itemIds.increment();
     uint256 itemId = _itemIds.current();
-    marketItems.push(itemId);
   
     idToMarketItem[itemId] =  MarketItem(
       itemId,
