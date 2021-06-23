@@ -132,7 +132,7 @@ contract NFTMarket is ReentrancyGuard {
   function createMarketSale(
     address nftContract,
     uint256 itemId
-    ) payable public {
+    ) public payable nonReentrant {
     uint price = idToMarketItem[itemId].price;
     uint tokenId = idToMarketItem[itemId].tokenId;
     require(msg.value == price, "Please submit the asking price in order to complete the purchase");
